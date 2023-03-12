@@ -3,10 +3,15 @@ project(one)
 
 set(CMAKE_CXX_STANDARD 23)
 
-set(PROJECT_SOURCES
-	${PROJECT_SOURCES}
-	${CMAKE_CURRENT_SOURCE_DIR}/constants.h
-	${CMAKE_CURRENT_SOURCE_DIR}/comparators.h
-	${CMAKE_CURRENT_SOURCE_DIR}/math.h
-	PARENT_SCOPE
+set(UTILS_SOURCES
+
+	constants.h
+	comparators.h
+	math.h
 )
+
+set(CMAKE_AUTOMOC OFF)
+set(CMAKE_AUTOUIC OFF)
+set(CMAKE_AUTORCC OFF)
+
+# add_library(${THIS} STATIC ${UTILS_SOURCES})

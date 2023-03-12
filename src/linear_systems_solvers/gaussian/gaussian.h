@@ -14,10 +14,6 @@ class GaussianSolver : public BaseLinearSystemSolver
 private:
 	std::vector<Matrix> history;
 	Matrix get_triangle(Matrix matrix);
-	std::vector<int> sort_matrix(Matrix &matrix);
-	void add_to_history(const Matrix &matrix,
-	                    const std::unordered_set<int> &ignored_lines,
-	                    const std::unordered_set<int> &ignored_columns);
 
 public:
 	void solve();
