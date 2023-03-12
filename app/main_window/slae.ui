@@ -199,7 +199,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QColumnView" name="columnView">
+         <widget class="QTableWidget" name="solutionVector">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -236,6 +236,22 @@
           <property name="editTriggers">
            <set>QAbstractItemView::DoubleClicked</set>
           </property>
+          <property name="rowCount">
+           <number>1</number>
+          </property>
+          <attribute name="horizontalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderHighlightSections">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderHighlightSections">
+           <bool>false</bool>
+          </attribute>
+          <row/>
          </widget>
         </item>
        </layout>

@@ -1,15 +1,14 @@
-#pragma once
-
 #include "matrix.h"
 #include "structures/vector/vector.h"
 #include <algorithm>
+#include <cmath>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <utility>
-#include <algorithm>
-#include <cmath>
 
 #include "matrix.h"
+#include "utils/comparators.h"
 #include "utils/math.h"
 #include <random>
 namespace matrix
@@ -19,7 +18,23 @@ using std::pair;
 using std::shared_ptr;
 using vector::Vector;
 
+void Matrix::copy_from(const Matrix& other_matrix)
+{
+	auto k = this->size();
+	lines = shared_ptr<Vector[]>(new Vector[other_matrix.size().first]);
+	_size = other_matrix.size();
+
+	for (int i = 0; i < this->size().first; i++)
+		lines[i] = other_matrix[i];
+}
+
+
 Matrix::Matrix() {}
+
+Matrix::Matrix(const Matrix& other_matrix)
+{
+	this->copy_from(other_matrix);
+}
 
 Matrix::Matrix(size_t lines_count)
 {
@@ -44,7 +59,6 @@ void Matrix::resize(pair<size_t, size_t> new_size)
 	if (new_size.second == 0)
 		return;
 
-
 	for (int i = 0; i < _size.first; i++) {
 		if (i < old_size.first)
 			lines[i] = std::move(old_lines[i]);
@@ -65,11 +79,11 @@ void Matrix::insert_line(size_t position, const Vector &line)
 
 	int step = 0;
 
-	for (int i = 0; i < this->size().first; i++) {
+	for (int i = 0; i < this->size().first + 1; i++) {
 		if (i == position)
 			step++;
 		else
-			lines[i + step] = std::move(old_lines[i]);
+			lines[i] = std::move(old_lines[i - step]);
 	}
 	lines[position] = Vector(this->size().second);
 	_size.first++;
@@ -84,10 +98,43 @@ void Matrix::insert_column(size_t position, const Vector &column)
 
 	for (int i = 0; i < this->size().first; i++)
 		lines[i].insert(position, column[i]);
-
 	_size.second++;
 }
 
+Vector Matrix::erase_line(size_t position)
+{
+	if (this->size().first < position)
+		throw std::out_of_range("");
+
+	auto old_lines = lines;
+	auto result = lines[position];
+	lines = shared_ptr<Vector[]>(new Vector[this->size().first - 1]);
+
+	int step = 0;
+
+	for (int i = 0; i < this->size().first; i++) {
+		if (i == position)
+			step++;
+		else
+			lines[i - step] = std::move(old_lines[i]);
+	}
+	_size.first--;
+	return result;
+}
+
+Vector Matrix::erase_column(size_t position)
+{
+	if (this->size().second <= position)
+		throw std::out_of_range("");
+
+	Vector result(this->size().first);
+	for (int i = 0; i < this->size().first; i++) {
+		result[i] = lines[i].erase(position);
+	}
+
+	_size.second--;
+	return result;
+}
 // GETTERS
 pair<size_t, size_t> Matrix::size() const
 {
@@ -104,15 +151,26 @@ Vector Matrix::get_column(int id) const
 
 	return result;
 }
+
 double Matrix::get_norm() const
 {
-	double result = 0;
-	for(int i = 0; i < this->size().first; i++)
-		for(int j = 0; j < this->size().second; j++)
-			result = std::max(result, std::abs(lines[i][j]));
-	return result;
+	auto position = this->max_element_position(utils::max_abs_comparator);
+	return lines[position.first][position.second];
 }
 
+pair<size_t, size_t>
+Matrix::max_element_position(std::function<bool(double, double)> cmp) const
+{
+	pair<size_t, size_t> result = {0, 0};
+
+	for (int i = 0; i < this->size().first; i++)
+		for (int j = 0; j < this->size().second; j++)
+			if (cmp(lines[i][j], lines[result.first][result.second])) {
+				result = pair(i, j);
+			}
+
+	return result;
+}
 // OPERATORS
 Vector &Matrix::operator[](int id) const
 {
@@ -123,12 +181,7 @@ Vector &Matrix::operator[](int id) const
 
 Matrix Matrix::operator=(const Matrix &other_matrix)
 {
-	lines = shared_ptr<Vector[]>(new Vector[other_matrix.size().first]);
-	_size = other_matrix.size();
-
-	for (int i = 0; i < this->size().first; i++)
-		lines[i] = other_matrix[i];
-
+	this->copy_from(other_matrix);
 	return *this;
 }
 Matrix Matrix::operator+(const Matrix &other_matrix) const
@@ -174,6 +227,21 @@ Matrix Matrix::operator*(const Matrix &other_matrix) const
 	return result;
 }
 
+std::istream &operator>>(std::istream &stream, Matrix &matrix)
+{
+	for (int i = 0; i < matrix.size().first; i++)
+		stream >> matrix[i];
+
+	return stream;
+}
+
+std::ostream &operator<<(std::ostream &stream, const Matrix &matrix)
+{
+	for (int i = 0; i < matrix.size().first; i++)
+		stream << matrix[i] << '\n';
+
+	return stream;
+}
 Matrix Matrix::get_random(pair<size_t, size_t> size, double min_value,
                           double max_value)
 {

@@ -12,19 +12,18 @@ protected:
 
 public:
 	matrix::Matrix coeficient_matrix;
-	vector::Vector constant_vector;
+	vector::Vector constants_vector;
 
-	BaseLinearSystemSolver(const matrix::Matrix& coeficient_matrix, const vector::Vector& constant_vector)
-	{
-		this->coeficient_matrix = coeficient_matrix;
-		this->constant_vector = constant_vector;
-	}
+	BaseLinearSystemSolver(){}
 
-	vector::Vector get_solution_vector()
-	{
-		return solution_vector;
-	}
+	BaseLinearSystemSolver(const matrix::Matrix& coeficient_matrix, const vector::Vector& constant_vector);
+
+	vector::Vector get_solution_vector() const;
+
+	void clear();
 
 	virtual void solve() = 0;
+
+	virtual ~BaseLinearSystemSolver(){}
 };
 } // namespace linear_systems

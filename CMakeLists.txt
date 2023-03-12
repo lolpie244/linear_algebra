@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(lab_1 VERSION 0.1 LANGUAGES CXX)
+project(linear_algebra VERSION 0.1 LANGUAGES CXX)
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -28,6 +28,8 @@ set(PROJECT_SOURCES
         app/main_window/slae.cpp
         app/main_window/slae.h
         app/main_window/slae.ui
+		app/main_window/linear_system_methods/linear_system_methods.h
+		app/main_window/linear_system_methods/linear_system_methods.cpp
 
 		app/generate_input_window/generateinputwindow.cpp
 		app/generate_input_window/generateinputwindow.h
@@ -37,31 +39,31 @@ set(PROJECT_SOURCES
 set(QT_VERSION_MAJOR 5)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(lab_1
+    qt_add_executable(linear_algebra
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
-#    set_property(TARGET lab_1 APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#    set_property(TARGET linear_algebra APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
-        add_library(lab_1 SHARED
+        add_library(linear_algebra SHARED
             ${PROJECT_SOURCES}
         )
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
-        add_executable(lab_1
+        add_executable(linear_algebra
             ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
-target_link_libraries(lab_1 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(linear_algebra PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-set_target_properties(lab_1 PROPERTIES
+set_target_properties(linear_algebra PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -69,10 +71,10 @@ set_target_properties(lab_1 PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
-install(TARGETS lab_1
+install(TARGETS linear_algebra
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(lab_1)
+    qt_finalize_executable(linear_algebra)
 endif()

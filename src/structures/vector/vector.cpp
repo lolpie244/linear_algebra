@@ -1,12 +1,26 @@
-#pragma once
-
 #include "vector.h"
+#include <algorithm>
+#include <iostream>
 #include <stdexcept>
 
 namespace vector
 {
 
 using std::shared_ptr;
+
+void Vector::copy_from(const Vector& other_vector)
+{
+	values = shared_ptr<double[]>(new double[other_vector.size()]);
+	_size = other_vector.size();
+
+	for (int i = 0; i < this->size(); i++)
+		values[i] = other_vector[i];
+}
+
+Vector::Vector(const Vector &other_vector)
+{
+	this->copy_from(other_vector);
+}
 
 Vector::Vector(size_t size)
 {
@@ -52,14 +66,36 @@ void Vector::insert(size_t position, double value)
 
 	int step = 0;
 
-for (int i = 0; i < this->size(); i++) {
+	for (int i = 0; i < this->size() + 1; i++) {
 		if (i == position)
 			step++;
 		else
-			values[i + step] = old_values[i];
+			values[i] = old_values[i - step];
 	}
-	values[position] = 0;
+	values[position] = value;
 	_size++;
+}
+
+double Vector::erase(size_t position)
+{
+	if (this->size() <= position)
+		throw std::out_of_range("");
+
+	auto old_values = values;
+	double result = values[position];
+
+	values = shared_ptr<double[]>(new double[this->size() - 1]);
+
+	int step = 0;
+
+	for (int i = 0; i < this->size(); i++) {
+		if (i == position)
+			step++;
+		else
+			values[i - step] = old_values[i];
+	}
+	_size--;
+	return result;
 }
 
 // GETTERS
@@ -69,7 +105,7 @@ size_t Vector::size() const
 }
 
 // OPERATORS
-double& Vector::operator[](int id) const
+double &Vector::operator[](int id) const
 {
 	if (_size < id)
 		throw std::out_of_range("");
@@ -77,19 +113,17 @@ double& Vector::operator[](int id) const
 	return values[id];
 }
 
-Vector Vector::operator=(Vector other_vector)
+Vector& Vector::operator=(Vector other_vector)
 {
-
-	values = shared_ptr<double[]>(new double[other_vector.size()]);
-	_size = other_vector.size();
-
-	for (int i = 0; i < this->size(); i++)
-		values[i] = other_vector[i];
-
+	this->copy_from(other_vector);
 	return *this;
 }
+void Vector::operator+=(Vector other_vector)
+{
+	*this = *this + other_vector;
+}
 
-Vector Vector::operator+(Vector other_vector)
+Vector Vector::operator+(Vector other_vector) const
 {
 	if (this->size() != other_vector.size())
 		throw std::invalid_argument("Vectors must be of the same length");
@@ -102,7 +136,7 @@ Vector Vector::operator+(Vector other_vector)
 	return result;
 }
 
-Vector Vector::operator-(Vector other_vector)
+Vector Vector::operator-(Vector other_vector) const
 {
 	if (this->size() != other_vector.size())
 		throw std::invalid_argument("Vectors must be of the same length");
@@ -115,7 +149,7 @@ Vector Vector::operator-(Vector other_vector)
 	return result;
 }
 
-double Vector::operator*(Vector other_vector)
+double Vector::operator*(Vector other_vector) const
 {
 	if (this->size() != other_vector.size())
 		throw std::invalid_argument("Vectors must be of the same length");
@@ -126,6 +160,31 @@ double Vector::operator*(Vector other_vector)
 		result += values[i] * other_vector[i];
 
 	return result;
+}
+
+Vector Vector::operator*(double coeficient) const
+{
+	Vector result(this->size());
+
+	for (int i = 0; i < this->size(); i++)
+		result[i] = values[i] * coeficient;
+
+	return result;
+}
+
+std::istream &operator>>(std::istream &stream, Vector &vector)
+{
+	for (int i = 0; i < vector.size(); i++)
+		stream >> vector[i];
+	return stream;
+}
+
+std::ostream &operator<<(std::ostream &stream, const Vector &vector)
+{
+	for (int i = 0; i < vector.size() - 1; i++)
+		stream << vector[i] << ' ';
+	stream << vector[vector.size() - 1];
+	return stream;
 }
 
 } // namespace vector
