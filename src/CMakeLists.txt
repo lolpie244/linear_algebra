@@ -1,5 +1,5 @@
-
-set(CMAKE_CXX_STANDARD 23)
+set(THIS linear_algebra_lib)
+set(CMAKE_CXX_STANDARD 17)
 
 set(SRC_SOURCES
 	structures/matrix/matrix.cpp
@@ -23,5 +23,5 @@ set(CMAKE_AUTOMOC OFF)
 set(CMAKE_AUTOUIC OFF)
 set(CMAKE_AUTORCC OFF)
 
-add_library(link_libraries STATIC ${SRC_SOURCES})
-target_include_directories(link_libraries PUBLIC ${CMAKE_SOURCE_DIR}/src)
+add_library(${THIS} STATIC ${SRC_SOURCES})
+target_include_directories(${THIS} PUBLIC ${CMAKE_SOURCE_DIR}/src)

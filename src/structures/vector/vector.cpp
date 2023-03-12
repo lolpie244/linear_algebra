@@ -172,6 +172,11 @@ Vector Vector::operator*(double coeficient) const
 	return result;
 }
 
+Vector Vector::operator/(double coeficient) const
+{
+	return *this * (1 / coeficient);
+}
+
 std::istream &operator>>(std::istream &stream, Vector &vector)
 {
 	for (int i = 0; i < vector.size(); i++)
@@ -181,6 +186,9 @@ std::istream &operator>>(std::istream &stream, Vector &vector)
 
 std::ostream &operator<<(std::ostream &stream, const Vector &vector)
 {
+	if(vector.size() == 0)
+		return stream;
+
 	for (int i = 0; i < vector.size() - 1; i++)
 		stream << vector[i] << ' ';
 	stream << vector[vector.size() - 1];

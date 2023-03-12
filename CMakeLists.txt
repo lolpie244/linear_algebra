@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(
-  linear_algebra
-  VERSION 0.1
-  LANGUAGES CXX)
+project(linear_algebra VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -17,9 +14,3 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(app)
 add_subdirectory(src)
-add_subdirectory(utils)
-
-
-# include_directories(
-# 	src/ utils/ app/
-# )

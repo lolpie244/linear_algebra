@@ -1,4 +1,4 @@
-#include "slae.h"
+#include "main_window/slae.h"
 
 #include <QApplication>
 

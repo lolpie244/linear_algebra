@@ -1,5 +1,5 @@
-#include "src/file_processors/base_file_processor.h"
-#include "src/linear_systems_solvers/base_linear_system_solver.h"
+#include "file_processors/base_file_processor.h"
+#include "linear_systems_solvers/base_linear_system_solver.h"
 #include <map>
 #include <memory>
 #include <string>

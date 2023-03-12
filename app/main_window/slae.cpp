@@ -1,6 +1,6 @@
 #include "slae.h"
 #include "./ui_slae.h"
-#include "app/generate_input_window/generateinputwindow.h"
+#include "../generate_input_window/generateinputwindow.h"
 #include "linear_system_methods/linear_system_methods.h"
 #include "only_number_delegate.h"
 #include <QFileDialog>

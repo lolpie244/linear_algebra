@@ -1,9 +1,10 @@
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+
+set(CMAKE_CXX_STANDARD 17)
 # find_package(Qwt REQUIRED)
 
 set(APP_SOURCES
-
 	main.cpp
 	main_window/slae.cpp
 	main_window/slae.h
@@ -34,7 +35,7 @@ endif()
 
 target_link_libraries(
   linear_algebra PRIVATE Qt${QT_VERSION_MAJOR}::Widgets ${QWT_LIBRARIES}
-                               linear_algebra-lib)
+                               linear_algebra_lib)
 include_directories(${QWT_INCLUDE_DIRS})
 
 set_target_properties(

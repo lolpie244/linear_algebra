@@ -36,6 +36,7 @@ public:
 	Vector operator-(Vector other_vector) const;
 	double operator*(Vector other_vector) const;
 	Vector operator*(double coeficient) const;
+	Vector operator/(double coeficient) const;
 	friend std::istream& operator>>(std::istream& stream, Vector& vector);
 	friend std::ostream& operator<<(std::ostream& stream, const Vector& vector);
 };

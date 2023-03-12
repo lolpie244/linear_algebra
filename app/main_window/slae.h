@@ -1,8 +1,8 @@
 #ifndef SLAE_H
 #define SLAE_H
 
-#include "src/file_processors/file_processors.h"
-#include "src/linear_systems_solvers/base_linear_system_solver.h"
+#include "file_processors/file_processors.h"
+#include "linear_systems_solvers/base_linear_system_solver.h"
 #include <QMainWindow>
 #include <memory>
 

@@ -1,6 +1,6 @@
 #include "linear_system_methods.h"
-#include "src/file_processors/file_processors.h"
-#include "src/linear_systems_solvers/gaussian/gaussian.h"
+#include "file_processors/file_processors.h"
+#include "linear_systems_solvers/gaussian/gaussian.h"
 #include <string>
 namespace linear_systems_solvers_list
 {
