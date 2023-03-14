@@ -36,6 +36,7 @@ public:
 	void insert_column(size_t position, const Vector &column);
 	Vector erase_line(size_t position);
 	Vector erase_column(size_t position);
+	Matrix slice(pair<size_t, size_t> begin, pair<size_t, size_t> end);
 
 	// GETTERS
 	pair<size_t, size_t> size() const;

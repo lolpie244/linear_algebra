@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <layout class="QVBoxLayout" name="buttons" stretch="0,0,0,0,0,5,2,0,0">
+       <layout class="QVBoxLayout" name="buttons" stretch="0,0,0,0,0,0,5,2,0,0">
         <item>
          <spacer name="verticalSpacer_2">
           <property name="orientation">
@@ -49,6 +49,13 @@
           </property>
           <property name="text">
            <string>Generate matrix</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="inverseButton">
+          <property name="text">
+           <string>Inverse matrix</string>
           </property>
          </widget>
         </item>

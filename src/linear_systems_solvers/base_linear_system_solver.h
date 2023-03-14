@@ -23,6 +23,7 @@ public:
 	void clear();
 
 	virtual void solve() = 0;
+	virtual void inverse() = 0;
 
 	virtual ~BaseLinearSystemSolver(){}
 };

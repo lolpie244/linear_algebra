@@ -177,3 +177,10 @@ void Slae::on_StartButton_clicked()
 	update_solution_vector();
 }
 
+
+void Slae::on_inverseButton_clicked()
+{
+	solver->inverse();
+	update_input_screen();
+}
+

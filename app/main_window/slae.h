@@ -36,6 +36,8 @@ private slots:
 
     void on_StartButton_clicked();
 
+    void on_inverseButton_clicked();
+
 private:
 	Ui::Slae *ui;
 	std::shared_ptr<file_processor::BaseFileProcessor<std::shared_ptr<linear_systems::BaseLinearSystemSolver>>> file_processor;

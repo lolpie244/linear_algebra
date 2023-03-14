@@ -13,7 +13,7 @@ class Vector
 private:
 	size_t _size = 0;
 	shared_ptr<double[]> values;
-	void copy_from(const Vector& other_vector);
+	void copy_from(const Vector &other_vector);
 
 public:
 	Vector() {}
@@ -24,20 +24,21 @@ public:
 	void fill(size_t count, double value);
 	void insert(size_t position, double value);
 	double erase(size_t position);
+	Vector slice(size_t begin, size_t end) const;
 	//
 	// GETTERS
 	size_t size() const;
 
 	// OPERATORS
 	double &operator[](int id) const;
-	Vector& operator=(Vector other_vector);
+	Vector &operator=(Vector other_vector);
 	void operator+=(Vector other_vector);
 	Vector operator+(Vector other_vector) const;
 	Vector operator-(Vector other_vector) const;
 	double operator*(Vector other_vector) const;
 	Vector operator*(double coeficient) const;
 	Vector operator/(double coeficient) const;
-	friend std::istream& operator>>(std::istream& stream, Vector& vector);
-	friend std::ostream& operator<<(std::ostream& stream, const Vector& vector);
+	friend std::istream &operator>>(std::istream &stream, Vector &vector);
+	friend std::ostream &operator<<(std::ostream &stream, const Vector &vector);
 };
 } // namespace vector

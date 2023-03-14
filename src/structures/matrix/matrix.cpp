@@ -18,7 +18,7 @@ using std::pair;
 using std::shared_ptr;
 using vector::Vector;
 
-void Matrix::copy_from(const Matrix& other_matrix)
+void Matrix::copy_from(const Matrix &other_matrix)
 {
 	auto k = this->size();
 	lines = shared_ptr<Vector[]>(new Vector[other_matrix.size().first]);
@@ -28,10 +28,9 @@ void Matrix::copy_from(const Matrix& other_matrix)
 		lines[i] = other_matrix[i];
 }
 
-
 Matrix::Matrix() {}
 
-Matrix::Matrix(const Matrix& other_matrix)
+Matrix::Matrix(const Matrix &other_matrix)
 {
 	this->copy_from(other_matrix);
 }
@@ -133,6 +132,22 @@ Vector Matrix::erase_column(size_t position)
 	}
 
 	_size.second--;
+	return result;
+}
+
+Matrix Matrix::slice(pair<size_t, size_t> begin, pair<size_t, size_t> end)
+{
+	if (end < begin)
+		throw std::invalid_argument("Invalid range");
+
+	if (this->size() < end)
+		throw std::out_of_range("");
+
+	Matrix result(end.first - begin.first);
+	result._size.second = end.second - begin.second;
+
+	for (int i = begin.first; i < end.first; i++)
+		result[i - begin.first] = std::move(lines[i].slice(begin.second, end.second));
 	return result;
 }
 // GETTERS

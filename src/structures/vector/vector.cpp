@@ -2,13 +2,14 @@
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
+#include <unordered_set>
 
 namespace vector
 {
 
 using std::shared_ptr;
 
-void Vector::copy_from(const Vector& other_vector)
+void Vector::copy_from(const Vector &other_vector)
 {
 	values = shared_ptr<double[]>(new double[other_vector.size()]);
 	_size = other_vector.size();
@@ -98,6 +99,20 @@ double Vector::erase(size_t position)
 	return result;
 }
 
+Vector Vector::slice(size_t begin, size_t end) const
+{
+	if (end < begin)
+		throw std::invalid_argument("Invalid range");
+
+	if (this->size() < end)
+		throw std::out_of_range("");
+
+	Vector result(end - begin);
+	for (int i = begin; i < end; i++)
+		result[i - begin] = values[i];
+	return result;
+}
+
 // GETTERS
 size_t Vector::size() const
 {
@@ -113,7 +128,7 @@ double &Vector::operator[](int id) const
 	return values[id];
 }
 
-Vector& Vector::operator=(Vector other_vector)
+Vector &Vector::operator=(Vector other_vector)
 {
 	this->copy_from(other_vector);
 	return *this;
@@ -186,7 +201,7 @@ std::istream &operator>>(std::istream &stream, Vector &vector)
 
 std::ostream &operator<<(std::ostream &stream, const Vector &vector)
 {
-	if(vector.size() == 0)
+	if (vector.size() == 0)
 		return stream;
 
 	for (int i = 0; i < vector.size() - 1; i++)
