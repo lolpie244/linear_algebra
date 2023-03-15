@@ -43,6 +43,7 @@ private:
 	std::shared_ptr<file_processor::BaseFileProcessor<std::shared_ptr<linear_systems::BaseLinearSystemSolver>>> file_processor;
 	std::shared_ptr<linear_systems::BaseLinearSystemSolver> solver;
 	
+	std::map<QString, QString> get_information();
 	void update_input_screen();
 	void update_coeficient_matrix();
 	void update_constants_vector();

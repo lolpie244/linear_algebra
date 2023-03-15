@@ -1,6 +1,6 @@
 #include "slae.h"
-#include "./ui_slae.h"
 #include "../generate_input_window/generateinputwindow.h"
+#include "./ui_slae.h"
 #include "linear_system_methods/linear_system_methods.h"
 #include "only_number_delegate.h"
 #include <QFileDialog>
@@ -20,7 +20,8 @@ Slae::Slae(QWidget *parent) : QMainWindow(parent), ui(new Ui::Slae)
 	ui->matrixTable->setItemDelegate(new Delegate);
 	ui->constantsVector->setItemDelegate(new Delegate);
 	ui->SelectMethod->clear();
-	for(auto key: linear_systems_solvers_list::LinearSystemMethodsInfo().methods_list())
+	for (auto key :
+	        linear_systems_solvers_list::LinearSystemMethodsInfo().methods_list())
 		ui->SelectMethod->addItem(QString::fromStdString(key.first));
 
 	ui->SelectMethod->setCurrentIndex(0);
@@ -30,6 +31,11 @@ Slae::~Slae()
 {
 	delete ui;
 }
+void ErrorMessage(const std::exception &ex)
+{
+	QMessageBox message_box;
+	message_box.critical(0, "Error", QString::fromStdString(ex.what()));
+}
 
 void Slae::update_coeficient_matrix()
 {
@@ -37,8 +43,9 @@ void Slae::update_coeficient_matrix()
 	ui->matrixTable->setColumnCount(solver->coeficient_matrix.size().second);
 	for (int i = 0; i < solver->coeficient_matrix.size().first; i++)
 		for (int j = 0; j < solver->coeficient_matrix.size().second; j++)
-			ui->matrixTable->setItem(
-			    i, j, new QTableWidgetItem(QString::number(solver->coeficient_matrix[i][j])));
+			ui->matrixTable->setItem(i, j,
+			                         new QTableWidgetItem(QString::number(
+			                                     solver->coeficient_matrix[i][j])));
 }
 
 void Slae::update_constants_vector()
@@ -46,7 +53,8 @@ void Slae::update_constants_vector()
 	ui->constantsVector->setRowCount(solver->constants_vector.size());
 	for (int i = 0; i < solver->constants_vector.size(); i++)
 		ui->constantsVector->setItem(
-		    i, 0, new QTableWidgetItem(QString::number(solver->constants_vector[i])));
+		    i, 0,
+		    new QTableWidgetItem(QString::number(solver->constants_vector[i])));
 }
 
 void Slae::update_solution_vector()
@@ -76,7 +84,13 @@ void Slae::on_LoadFromFileButton_clicked()
 	if (filename != "") {
 		linear_systems::GaussianSolver new_solver;
 
-		solver = file_processor->read_from_file(filename.toStdString());
+		try {
+			solver = file_processor->read_from_file(filename.toStdString());
+		} catch (const std::exception &ex) {
+			ErrorMessage(ex);
+			return;
+		}
+
 		update_input_screen();
 	}
 }
@@ -88,9 +102,10 @@ void Slae::on_GenerateButton_clicked()
 		pair<size_t, size_t> size = {input_dialog.dimension_number,
 		                             input_dialog.dimension_number + 1
 		                            };
-		solver->coeficient_matrix = matrix::Matrix::get_random(size, input_dialog.min_value,
-		                    input_dialog.max_value);
-		solver->constants_vector = solver->coeficient_matrix.erase_column(size.second - 1);
+		solver->coeficient_matrix = matrix::Matrix::get_random(
+		                                size, input_dialog.min_value, input_dialog.max_value);
+		solver->constants_vector =
+		    solver->coeficient_matrix.erase_column(size.second - 1);
 		update_input_screen();
 	}
 }
@@ -120,14 +135,24 @@ void Slae::on_constantsVector_cellChanged(int row, int column)
 	solver->clear();
 }
 
-void Slae::on_matrixInfo_clicked()
+map<QString, QString> Slae::get_information()
 {
 	map<QString, QString> information;
 
-	information["Matrix norm"] = QString::number(solver->coeficient_matrix.get_norm());
+	information["Matrix norm"] =
+	    QString::number(solver->coeficient_matrix.get_norm());
 	information["System dimension"] =
 	    QString::number(solver->coeficient_matrix.size().first);
 
+	if (solver->get_solution_vector().size())
+		information["Measurement error"] =
+		    QString::number(solver->get_measurement_error());
+
+	return information;
+}
+void Slae::on_matrixInfo_clicked()
+{
+	auto information = this->get_information();
 	QTableWidget *table = new QTableWidget();
 	table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	table->horizontalHeader()->hide();
@@ -137,7 +162,7 @@ void Slae::on_matrixInfo_clicked()
 	table->setColumnWidth(0, 160);
 	table->setColumnWidth(1, 90);
 	int i = 0;
-    for (auto [key, value] : information) {
+	for (auto [key, value] : information) {
 		table->setItem(i, 0, new QTableWidgetItem(key));
 		table->setItem(i, 1, new QTableWidgetItem(value));
 		i++;
@@ -165,22 +190,32 @@ void Slae::on_resizeButton_clicked()
 void Slae::on_SelectMethod_currentIndexChanged(int index)
 {
 	std::string method = ui->SelectMethod->currentText().toStdString();
-	auto linear_method = linear_systems_solvers_list::LinearSystemMethodsInfo().get(method);
+	auto linear_method =
+	    linear_systems_solvers_list::LinearSystemMethodsInfo().get(method);
 	solver = linear_method.solver;
 	file_processor = linear_method.file_processor;
 }
 
-
 void Slae::on_StartButton_clicked()
 {
-	solver->solve();
+
+	try {
+		solver->solve();
+	} catch (const std::exception &ex) {
+		ErrorMessage(ex);
+		return;
+	}
 	update_solution_vector();
 }
 
-
 void Slae::on_inverseButton_clicked()
 {
-	solver->inverse();
+
+	try {
+		solver->inverse();
+	} catch (const std::exception &ex) {
+		ErrorMessage(ex);
+		return;
+	}
 	update_input_screen();
 }
-

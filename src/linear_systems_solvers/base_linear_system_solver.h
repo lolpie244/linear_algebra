@@ -23,7 +23,14 @@ public:
 	void clear();
 
 	virtual void solve() = 0;
-	virtual void inverse() = 0;
+	virtual void inverse()
+	{
+		throw std::logic_error("Not implemented");
+	}
+	virtual double get_measurement_error()
+	{
+		throw std::logic_error("Not implemented");
+	}
 
 	virtual ~BaseLinearSystemSolver(){}
 };

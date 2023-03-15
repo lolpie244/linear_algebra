@@ -13,12 +13,13 @@ class GaussianSolver : public BaseLinearSystemSolver
 
 private:
 	std::vector<Matrix> history;
-	Matrix get_triangle(Matrix matrix);
+	Matrix get_identity_matrix(Matrix matrix);
 
 public:
 	void solve();
 	void inverse();
 	void clear();
+	double get_measurement_error();
 	std::vector<Matrix> get_history() const;
 	std::vector<Matrix> get_inversed_coeficient_matrix() const;
 };

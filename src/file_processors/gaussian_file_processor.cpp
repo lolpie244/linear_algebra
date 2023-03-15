@@ -2,6 +2,7 @@
 #include <sstream>
 #include <utility>
 #include <memory>
+#include <stdexcept>
 
 namespace file_processor
 {
@@ -15,6 +16,9 @@ shared_ptr<BaseLinearSystemSolver> GaussianFileProcessor::from_string_stream(str
 {
 	pair<size_t, size_t> size;
 	text >> size.first >> size.second;
+
+	if(size.second - 1 != size.first)
+		throw std::invalid_argument("Incorrect matrix size");
 
 	Matrix matrix(size);
 	text >> matrix;
