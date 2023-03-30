@@ -1,11 +1,13 @@
 #include "gaussian.h"
 #include "structures/vector/vector.h"
-#include "utils/math.h"
 #include "utils/constants.h"
+#include "utils/math.h"
 #include <cmath>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <utility>
+#include <vector>
 
 namespace linear_systems
 {
@@ -13,43 +15,75 @@ using constants::DOUBLE_MIN;
 using matrix::Matrix;
 using vector::Vector;
 
-std::vector<Matrix> GaussianSolver::get_history() const
+std::pair<std::vector<Matrix>, std::vector<Matrix>> GaussianSolver::get_history() const
 {
-	return history;
+	return {lower_history, upper_history};
+}
+void check_matrix_line(const Matrix &matrix, int line)
+{
+	if (matrix[line][line] == 0) {
+		if (matrix[line][matrix.size().first] != 0) {
+			for (int i = 0; i < matrix.size().first; i++)
+				if (utils::round(matrix[line][i], 15) != 0)
+					goto singular;
+
+			throw std::invalid_argument(
+			    "Error: The matrix is inconsistent (no solution)");
+		}
+singular:
+		throw std::invalid_argument(
+		    "Error: The matrix is singular (more than one solution)");
+	}
+}
+std::pair<Matrix, Matrix> GaussianSolver::direct_move(Matrix matrix)
+{
+	Matrix upper = std::move(matrix);
+	Matrix lower = Matrix::get_identity(matrix.size().first);
+	std::vector<std::pair<int, int>> swap_history;
+
+	for (int i = 0; i < upper.size().first; i++) {
+		int max_line = i;
+		for (int line = i; line < upper.size().first; line++)
+			if (std::abs(upper[line][i]) > std::abs(upper[max_line][i])) {
+				max_line = line;
+			}
+
+		std::swap(upper[i], upper[max_line]);
+		std::swap(lower[i], lower[max_line]);
+
+		check_matrix_line(upper, i);
+
+		for (int line = i + 1; line < upper.size().first; line++) {
+			auto coef = -(upper[line][i] / upper[i][i]);
+			upper[line] += upper[i] * coef;
+			lower[line] += lower[line] * coef;
+		}
+		upper_history.push_back(upper);
+		lower_history.push_back(lower);
+	}
+	return {lower, upper};
+}
+Matrix GaussianSolver::reverse_move(Matrix matrix)
+{
+	matrix[0] = matrix[0] / matrix[0][0];
+	for (int column = matrix.size().first - 1; column > 0; column--) {
+		matrix[column] = matrix[column] / matrix[column][column];
+		check_matrix_line(matrix, column);
+		for (int line = column - 1; line >= 0; line--) {
+
+			if (matrix[line][column] != 0) {
+				double coeficient = -matrix[line][column];
+				matrix[line] += matrix[column] * coeficient;
+
+				upper_history.push_back(matrix);
+			}
+		}
+	}
+	return matrix;
 }
 Matrix GaussianSolver::get_identity_matrix(Matrix matrix)
 {
-	for (int i = 0; i < matrix.size().first; i++) {
-		int max_line = i;
-		double max_value = matrix[i][i];
-		for (int line = i; line < matrix.size().first; line++)
-			if (std::abs(matrix[line][i]) > std::abs(matrix[max_line][i])) {
-				max_line = line;
-				max_value = matrix[line][i];
-			}
-
-		std::swap(matrix[i], matrix[max_line]);
-		if (matrix[i][i] == 0)
-			throw std::invalid_argument("Gaussian method unused");
-
-		for (int line = i + 1; line < matrix.size().first; line++) {
-			double coeficient = -(matrix[line][i] / matrix[i][i]);
-			matrix[line] += matrix[i] * coeficient;
-		}
-		matrix[i] = matrix[i] / matrix[i][i];
-		history.push_back(matrix);
-	}
-
-	for (int i = 0; i < matrix.size().first - 1; i++)
-		for (int j = i + 1; j < matrix.size().first; j++) {
-			if (matrix[i][j] == 0)
-				continue;
-
-			double coeficient = -(matrix[i][j] / matrix[j][j]);
-			matrix[i] += matrix[j] * coeficient;
-			history.push_back(matrix);
-		}
-	return matrix;
+	return this->reverse_move(this->direct_move(matrix).second);
 }
 void GaussianSolver::solve()
 {
@@ -77,7 +111,7 @@ void GaussianSolver::inverse()
 	for (int i = 0; i < matrix.size().first; i++)
 		matrix[i][matrix.size().first + i] = 1;
 
-	history.push_back(matrix);
+	upper_history.push_back(matrix);
 
 	matrix = this->get_identity_matrix(matrix);
 
@@ -102,7 +136,8 @@ double GaussianSolver::get_measurement_error()
 }
 void GaussianSolver::clear()
 {
-	history.clear();
+	upper_history.clear();
+	lower_history.clear();
 	BaseLinearSystemSolver::clear();
 }
 } // namespace linear_systems

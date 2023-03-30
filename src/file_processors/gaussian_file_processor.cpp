@@ -38,15 +38,21 @@ stringstream GaussianFileProcessor::to_string_stream(const shared_ptr<BaseLinear
 	result << "Input extended matrix:\n";
 	result << extended_matrix.size().first << ' ' << extended_matrix.size().second << '\n' << extended_matrix;
 
-	auto history = gaussian->get_history();
+	auto [lower_history, upper_history] = gaussian->get_history();
 
-	if(history.empty())
+	if(upper_history.empty())
 		return result;
 
 	result << "\n====================\n";
-	result << "Intermediate matrices:\n";
-	for(Matrix& matrix: history)
-		result << matrix << "-------------\n";
+	result << "Intermediate matrices: (direct move)\n";
+	int i = 0;
+	for(i = 0; i < lower_history.size(); i++)
+		result << "Lower:\n" << lower_history[i] << "\nUpper:\n" << upper_history[i] << "-------------\n";
+
+	result << "\n====================\n";
+	result << "Intermediate matrices: (reverse move)\n";
+	for(; i < upper_history.size(); i++)
+		result << upper_history[i] << "-------------\n";
 
 	result << "\n======================\n";
 	result << "Solution vector:\n" << gaussian->get_solution_vector();

@@ -3,6 +3,7 @@
 #include "structures/vector/vector.h"
 #include "utils/constants.h"
 #include "utils/comparators.h"
+#include <cstddef>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -57,5 +58,6 @@ public:
 	static Matrix get_random(pair<size_t, size_t> size,
 	                         double min_value = constants::DOUBLE_MIN,
 	                         double max_value = constants::DOUBLE_MAX);
+	static Matrix get_identity(size_t size);
 };
 } // namespace matrix

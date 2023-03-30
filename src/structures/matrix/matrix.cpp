@@ -271,4 +271,12 @@ Matrix Matrix::get_random(pair<size_t, size_t> size, double min_value,
 
 	return result;
 }
+
+Matrix Matrix::get_identity(size_t size)
+{
+	Matrix result({size, size});
+	for(int i = 0; i < size; i++)
+		result[i][i] = 1;
+	return result;
+}
 } // namespace matrix

@@ -9,6 +9,7 @@
 #include <map>
 #include <qinputdialog.h>
 #include <qtableview.h>
+#include <stdexcept>
 #include <utility>
 
 using std::map;
@@ -78,7 +79,7 @@ void Slae::update_input_screen()
 void Slae::on_LoadFromFileButton_clicked()
 {
 	QString filter = tr("Text (*.txt)");
-	QString filename = QFileDialog::getOpenFileName(this, "Open File", "/home",
+	QString filename = QFileDialog::getOpenFileName(this, "Open File", "~/",
 	                   tr("TXT (*.txt)"), &filter);
 
 	if (filename != "") {
@@ -113,7 +114,7 @@ void Slae::on_GenerateButton_clicked()
 void Slae::on_SaveToFileButton_clicked()
 {
 	QString filter = tr("Text (*.txt)");
-	QString filename = QFileDialog::getSaveFileName(this, "Open File", "/home",
+	QString filename = QFileDialog::getSaveFileName(this, "Open File", "~/",
 	                   tr("TXT (*.txt)"), &filter);
 
 	if (filename != "") {
@@ -201,7 +202,7 @@ void Slae::on_StartButton_clicked()
 
 	try {
 		solver->solve();
-	} catch (const std::exception &ex) {
+	} catch (const std::invalid_argument &ex) {
 		ErrorMessage(ex);
 		return;
 	}
@@ -213,7 +214,7 @@ void Slae::on_inverseButton_clicked()
 
 	try {
 		solver->inverse();
-	} catch (const std::exception &ex) {
+	} catch (const std::invalid_argument &ex) {
 		ErrorMessage(ex);
 		return;
 	}
