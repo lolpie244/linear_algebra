@@ -9,21 +9,11 @@ namespace file_processor
 using matrix::Matrix;
 using linear_systems::GaussianSolver;
 using linear_systems::BaseLinearSystemSolver;
-using std::pair;
 using std::shared_ptr;
 
 shared_ptr<BaseLinearSystemSolver> GaussianFileProcessor::from_string_stream(stringstream &text)
 {
-	pair<size_t, size_t> size;
-	text >> size.first >> size.second;
-
-	if(size.second - 1 != size.first)
-		throw std::invalid_argument("Incorrect matrix size");
-
-	Matrix matrix(size);
-	text >> matrix;
-	auto vector = matrix.erase_column(matrix.size().second - 1);
-
+	auto [matrix, vector] = linear_system_from_string_stream(text);
 	return shared_ptr<linear_systems::BaseLinearSystemSolver>(new GaussianSolver(matrix, vector));
 }
 

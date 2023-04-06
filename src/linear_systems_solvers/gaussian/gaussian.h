@@ -17,12 +17,12 @@ private:
 	Matrix get_identity_matrix(Matrix matrix);
 	std::pair<Matrix, Matrix> direct_move(Matrix matrix);
 	Matrix reverse_move(Matrix matrix);
+	double get_measurement_error();
 
 public:
 	void solve();
 	void inverse();
 	void clear();
-	double get_measurement_error();
 	std::pair<std::vector<Matrix>, std::vector<Matrix>> get_history() const;
 	std::vector<Matrix> get_inversed_coeficient_matrix() const;
 };

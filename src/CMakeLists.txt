@@ -12,11 +12,15 @@ set(SRC_SOURCES
 	linear_systems_solvers/base_linear_system_solver.cpp
 	linear_systems_solvers/gaussian/gaussian.cpp
 	linear_systems_solvers/gaussian/gaussian.h
+	linear_systems_solvers/jacobi/jacobi.cpp
+	linear_systems_solvers/jacobi/jacobi.h
 
 	file_processors/file_processors.h
 	file_processors/base_file_processor.h
+	file_processors/base_linear_system_file_processor.cpp
 	file_processors/matrix_file_processor.cpp
 	file_processors/gaussian_file_processor.cpp
+	file_processors/jacobi_file_processor.cpp
 )
 
 set(CMAKE_AUTOMOC OFF)

@@ -16,7 +16,20 @@ protected:
 	stringstream to_string_stream(const matrix::Matrix &obj);
 };
 
-class GaussianFileProcessor : public BaseFileProcessor<shared_ptr<linear_systems::BaseLinearSystemSolver>>
+class BaseLinearSystemFileProcessor : public BaseFileProcessor<shared_ptr<linear_systems::BaseLinearSystemSolver>>
+{
+protected:
+	std::pair<matrix::Matrix, vector::Vector> linear_system_from_string_stream(stringstream &text);
+};
+
+class GaussianFileProcessor : public BaseLinearSystemFileProcessor
+{
+protected:
+	shared_ptr<linear_systems::BaseLinearSystemSolver> from_string_stream(stringstream &text);
+	stringstream to_string_stream(const shared_ptr<linear_systems::BaseLinearSystemSolver>& obj);
+};
+
+class JacobiFileProcessor : public BaseLinearSystemFileProcessor
 {
 protected:
 	shared_ptr<linear_systems::BaseLinearSystemSolver> from_string_stream(stringstream &text);

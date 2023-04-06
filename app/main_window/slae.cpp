@@ -145,9 +145,10 @@ map<QString, QString> Slae::get_information()
 	information["System dimension"] =
 	    QString::number(solver->coeficient_matrix.size().first);
 
-	if (solver->get_solution_vector().size())
-		information["Measurement error"] =
-		    QString::number(solver->get_measurement_error());
+	auto addition_information = solver->get_information();
+
+	for(auto [key, value]: addition_information)
+		information[QString::fromStdString(key)] = QString::fromStdString(value);
 
 	return information;
 }
@@ -193,7 +194,12 @@ void Slae::on_SelectMethod_currentIndexChanged(int index)
 	std::string method = ui->SelectMethod->currentText().toStdString();
 	auto linear_method =
 	    linear_systems_solvers_list::LinearSystemMethodsInfo().get(method);
+	auto old_solver = solver;
 	solver = linear_method.solver;
+	if (old_solver) {
+		solver->constants_vector = old_solver->constants_vector;
+		solver->coeficient_matrix = old_solver->coeficient_matrix;
+	}
 	file_processor = linear_method.file_processor;
 }
 
