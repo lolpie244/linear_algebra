@@ -2,6 +2,8 @@
 
 #include "structures/matrix/matrix.h"
 #include "structures/vector/vector.h"
+#include <string>
+#include <map>
 
 namespace linear_systems
 {
@@ -20,18 +22,18 @@ public:
 
 	vector::Vector get_solution_vector() const;
 
-	void clear();
+	virtual void clear();
 
 	virtual void solve() = 0;
 	virtual void inverse()
 	{
 		throw std::logic_error("Not implemented");
 	}
-	virtual double get_measurement_error()
-	{
-		throw std::logic_error("Not implemented");
-	}
 
+	virtual std::map<std::string, std::string> get_information()
+	{
+		return std::map<std::string, std::string>();
+	}
 	virtual ~BaseLinearSystemSolver(){}
 };
 } // namespace linear_systems
